@@ -6,8 +6,8 @@ repositories {
 
 dependencies {
   compile "org.spockframework:spock-core:1.0-groovy-2.4"
-  testCompile "com.h2database:h2:1.4+"
-  testCompile "org.jdbi:jdbi:2.75"
+  testCompile "com.h2database:h2:latest.release"
+  testCompile "org.jdbi:jdbi:latest.release"
 }
 
 sourceCompatibility = "1.7"

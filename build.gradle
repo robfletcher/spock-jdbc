@@ -1,0 +1,14 @@
+apply plugin: "groovy"
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile "org.spockframework:spock-core:1.0-groovy-2.4"
+  testCompile "com.h2database:h2:1.4+"
+  testCompile "org.jdbi:jdbi:2.75"
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

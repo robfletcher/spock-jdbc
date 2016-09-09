@@ -44,7 +44,7 @@ public class TableTruncator {
   private void deleteFrom(Table table) {
     deleteFromDependentTables(table);
     try {
-      String sql = format("DELETE FROM %s.%s.%s", table.getCatalog(), table.getSchema(), table.getName());
+      String sql = "DELETE FROM " + table;
       try (PreparedStatement statement = connection.prepareStatement(sql)) {
         int rowCount = statement.executeUpdate();
         if (verbose) {

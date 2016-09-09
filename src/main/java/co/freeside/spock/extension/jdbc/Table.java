@@ -3,7 +3,6 @@ package co.freeside.spock.extension.jdbc;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Objects;
-import static java.lang.String.format;
 
 class Table {
   private final String catalog;
@@ -58,6 +57,10 @@ class Table {
   }
 
   @Override public String toString() {
-    return format("Table{catalog='%s', schema='%s', name='%s'}", catalog, schema, name);
+    StringBuilder builder = new StringBuilder();
+    if (catalog != null) builder.append(catalog).append('.');
+    if (schema != null) builder.append(schema).append('.');
+    builder.append(name);
+    return builder.toString();
   }
 }

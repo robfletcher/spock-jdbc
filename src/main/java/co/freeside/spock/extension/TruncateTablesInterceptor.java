@@ -46,7 +46,7 @@ public class TruncateTablesInterceptor implements IMethodInterceptor {
 
         try (Connection connection = connector.connectionFrom(fieldValue)) {
           // TODO: allow schema, etc. to be parameterized
-          truncateTables(connection);
+          truncateTables(connection, annotation.verbose());
         }
       } catch (Throwable t) {
         if (!annotation.quiet()) exceptions.add(t);

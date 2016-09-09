@@ -112,23 +112,23 @@ abstract class TruncateTablesSpec extends Specification {
   }
 
   static class TruncateTablesWithRawConnectionSpec extends TruncateTablesSpec {
-    @TruncateTables Connection connection = dataSource.connection
+    @TruncateTables(verbose = true) Connection connection = dataSource.connection
   }
 
   static class TruncateTablesWithDataSourceSpec extends TruncateTablesSpec {
-    @TruncateTables DataSource ds = dataSource
+    @TruncateTables(verbose = true) DataSource ds = dataSource
   }
 
   static class TruncateTablesWithGroovySqlSpec extends TruncateTablesSpec {
-    @TruncateTables Sql groovySql = new Sql(dataSource)
+    @TruncateTables(verbose = true) Sql groovySql = new Sql(dataSource)
   }
 
   static class TruncateTablesWithSingleConnectionGroovySqlSpec extends TruncateTablesSpec {
-    @TruncateTables Sql groovySql = new Sql(dataSource.connection)
+    @TruncateTables(verbose = true) Sql groovySql = new Sql(dataSource.connection)
   }
 
   static class TruncateTablesWithJdbiSpec extends TruncateTablesSpec {
-    @TruncateTables(DBIConnector) DBI dbi = new DBI(dataSource);
+    @TruncateTables(value = DBIConnector, verbose = true) DBI dbi = new DBI(dataSource);
   }
 
   static class DBIConnector extends TypedConnector<DBI> {

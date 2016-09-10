@@ -7,6 +7,8 @@ dependencies {
 }
 
 javadoc {
+  include "co/freeside/spock/*"
+
   options.docletpath = configurations.asciidoclet.files.asType(List)
   options.doclet = "org.asciidoctor.Asciidoclet"
 

@@ -1,8 +1,11 @@
-= Spock JDBC extensions
+# Spock JDBC extensions
 
-JDBC related extensions for http://spockframework.org[Spock].
+JDBC related extensions for [Spock](http://spockframework.org).
 
-== Automatic cleanup of test data
+[![Build Status](https://travis-ci.org/robfletcher/spock-jdbc.svg?branch=master)](https://travis-ci.org/robfletcher/spock-jdbc)
+[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/robfletcher/spock-jdbc/master/LICENSE)
+
+## Automatic cleanup of test data
 
 If you have tests that insert data to a database it's important to ensure the data is cleaned up between tests.
 Instead of having to write a `cleanup` method in each specification class you can use the `@TruncateTables` annotation.
@@ -12,30 +15,27 @@ In the cleanup phase the extension will use the annotated field to connect to th
 
 For example you could use the annotation in a Spring integration test with a dependency-injected `DataSource` instance like this:
 
-[source,groovy]
-----
+```groovy
 @TruncateTables @Autowired DataSource dataSource
-----
+```
 
-=== Foreign key constraints
+### Foreign key constraints
 
 The extension will analyze foreign key constraints on the tables it finds and delete data in an order that will not cause constraint violation exceptions.
 
-=== Using a custom connection source
+### Using a custom connection source
 
 Instead of using a `Connection`, `DataSource` or `Sql` property you can write an implementation of `Connector` or `TypedConnector` to acquire a connection from the annotated field.
 
-For example, if you were using http://jdbi.org/[JDBI] and have a `org.skife.jdbi.v2.DBI` field you could annotate the field with:
+For example, if you were using [JDBI](http://jdbi.org/) and have a `org.skife.jdbi.v2.DBI` field you could annotate the field with:
 
-[source,groovy,indent=0]
-----
+```groovy
 @TruncateTables(DBIConnector) DBI dbi
-----
+```
 
 … and implement a connector like this:
 
-[source,groovy,indent=0]
-----
+```groovy
 static class DBIConnector extends TypedConnector<DBI> {
   DBIConnector() { super(DBI) }
 
@@ -44,16 +44,24 @@ static class DBIConnector extends TypedConnector<DBI> {
     source.open().connection
   }
 }
-----
+```
 
-=== Connection state
+### Connection state
 
 The connection will be closed after data is deleted.
 
-=== Logging activity
+### Logging activity
 
-Specify `@TruncateTables(verbose = true)` to log what the extension does.
+To log what the extension does:
 
-=== Ignoring exceptions
+```groovy
+@TruncateTables(verbose = true)
+```
 
-To ignore any exceptions encountered when deleting data specifiy `@TruncateTables(quiet = true)`.
+### Ignoring exceptions
+
+To ignore any exceptions encountered when deleting data:
+ 
+```groovy
+@TruncateTables(quiet = true)
+```

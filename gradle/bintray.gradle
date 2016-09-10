@@ -2,7 +2,7 @@ bintray {
   pkg {
     userOrg = "robfletcher"
     repo = "maven"
-    websiteUrl = "https://github.com/robfletcher/${project.name}"
+    websiteUrl = "http://robfletcher.github.io/${project.name}"
     issueTrackerUrl = "https://github.com/robfletcher/${project.name}/issues"
     vcsUrl = "https://github.com/robfletcher/${project.name}.git"
     labels = ["testing", "spock", "jdbc"]

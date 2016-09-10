@@ -9,6 +9,10 @@ JDBC related extensions for [Spock](http://spockframework.org).
 ## Installation
 
 ```groovy
+repositories {
+  jcenter()
+}
+
 dependencies {
   testCompile "co.freeside:spock-jdbc:1.0.0"
 }

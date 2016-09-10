@@ -1,0 +1,21 @@
+configurations {
+  asciidoclet
+}
+
+dependencies {
+  asciidoclet "org.asciidoctor:asciidoclet:0.+"
+}
+
+javadoc {
+  options.docletpath = configurations.asciidoclet.files.asType(List)
+  options.doclet = "org.asciidoctor.Asciidoclet"
+
+  options.author = true
+  options.windowTitle = "$project.name $version"
+  options.docTitle = "$project.name $version"
+  options.links = [
+    "http://spockframework.org/spock/javadoc/1.0/",
+    "http://docs.oracle.com/javase/8/docs/api/",
+    "http://docs.groovy-lang.org/latest/html/api/"
+  ]
+}

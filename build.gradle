@@ -1,4 +1,19 @@
-apply plugin: "groovy"
+buildscript {
+  repositories {
+    jcenter()
+  }
+}
+
+plugins {
+  id "groovy"
+  id "nebula.release" version "4.1.0"
+  id "nebula.source-jar" version "4.9.1"
+  id "nebula.javadoc-jar" version "4.9.1"
+  id "nebula.maven-publish" version "4.9.1"
+  id "nebula.nebula-bintray-publishing" version "3.3.4"
+}
+
+group = "co.freeside"
 
 repositories {
   jcenter()
@@ -12,3 +27,6 @@ dependencies {
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
+
+apply from: "$rootDir/gradle/asciidoclet.gradle"
+apply from: "$rootDir/gradle/bintray.gradle"

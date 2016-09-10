@@ -116,7 +116,7 @@ abstract class TruncateTablesSpec extends Specification {
   }
 
   static class TruncateTablesWithDataSourceSpec extends TruncateTablesSpec {
-    @TruncateTables DataSource ds = dataSource
+    @TruncateTables(verbose = true) DataSource ds = dataSource
   }
 
   static class TruncateTablesWithGroovySqlSpec extends TruncateTablesSpec {
@@ -128,15 +128,9 @@ abstract class TruncateTablesSpec extends Specification {
   }
 
   static class TruncateTablesWithJdbiSpec extends TruncateTablesSpec {
-    // tag::dbi[]
-    @TruncateTables(DBIConnector) DBI dbi
-    // end::dbi[]
-
-    def setup() {
-      dbi = new DBI(dataSource)
-    }
+    @TruncateTables(value = DBIConnector, verbose = true)
+    def dbi = new DBI(dataSource)
   }
-  // tag::dbiconnector[]
 
   static class DBIConnector extends TypedConnector<DBI> {
     DBIConnector() { super(DBI) }
@@ -146,5 +140,4 @@ abstract class TruncateTablesSpec extends Specification {
       source.open().connection
     }
   }
-  // end::dbiconnector[]
 }

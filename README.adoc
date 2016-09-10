@@ -29,14 +29,21 @@ For example, if you were using http://jdbi.org/[JDBI] you could annotate the con
 
 [source,groovy,indent=0]
 ----
-include::src/test/groovy/co/freeside/spock/TruncateTablesSpec.groovy[tags=dbi]
+@TruncateTables(DBIConnector) DBI dbi
 ----
 
 … and implement a connector like this:
 
 [source,groovy,indent=0]
 ----
-include::src/test/groovy/co/freeside/spock/TruncateTablesSpec.groovy[tags=dbiconnector]
+static class DBIConnector extends TypedConnector<DBI> {
+  DBIConnector() { super(DBI) }
+
+  @Override
+  protected Connection apply(DBI source) {
+    source.open().connection
+  }
+}
 ----
 
 === Connection state

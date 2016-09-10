@@ -1,6 +1,4 @@
 bintray {
-  user = bintrayUsername
-  key = bintrayApiKey
   pkg {
     userOrg = "robfletcher"
     repo = "maven"

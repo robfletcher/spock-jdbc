@@ -3,7 +3,22 @@
 JDBC related extensions for [Spock](http://spockframework.org).
 
 [![Travis branch](https://img.shields.io/travis/robfletcher/spock-jdbc/master.svg?maxAge=2592000&style=flat-square)](https://travis-ci.org/robfletcher/spock-jdbc)
+[![Bintray](https://img.shields.io/bintray/v/robfletcher/maven/spock-jdbc.svg?maxAge=2592000?style=flat-square)](https://bintray.com/robfletcher/maven/spock-jdbc/_latestVersion)
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg?style=flat-square)](https://raw.githubusercontent.com/robfletcher/spock-jdbc/master/LICENSE)
+
+## Installation
+
+```groovy
+repositories {
+  maven {
+    url "http://dl.bintray.com/robfletcher/maven" 
+  }
+}
+
+dependencies {
+  testCompile "co.freeside:spock-jdbc:1.0.0"
+}
+```
 
 ## Automatic cleanup of test data
 

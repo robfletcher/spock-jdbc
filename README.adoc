@@ -1,0 +1,52 @@
+= Spock JDBC extensions
+
+JDBC related extensions for http://spockframework.org[Spock].
+
+== Automatic cleanup of test data
+
+If you have tests that insert data to a database it's important to ensure the data is cleaned up between tests.
+Instead of having to write a `cleanup` method in each specification class you can use the `@TruncateTables` annotation.
+
+The annotation can be applied to a `java.sql.Connection`, `javax.sql.DataSource` or `groovy.sql.Sql` property of the specification.
+In the cleanup phase the extension will use the annotated field to connect to the database and simply delete everything from all tables.
+
+For example you could use the annotation in a Spring integration test with a dependency-injected `DataSource` instance like this:
+
+[source,groovy]
+----
+@TruncateTables @Autowired DataSource dataSource
+----
+
+=== Foreign key constraints
+
+The extension will analyze foreign key constraints on the tables it finds and delete data in an order that will not cause constraint violation exceptions.
+
+=== Using a custom connection source
+
+Instead of using a `Connection`, `DataSource` or `Sql` property you can write an implementation of `Connector` or `TypedConnector` to acquire a connection from the annotated field.
+
+For example, if you were using http://jdbi.org/[JDBI] you could annotate the connection with:
+
+[source,groovy,indent=0]
+----
+include::src/test/groovy/co/freeside/spock/TruncateTablesSpec.groovy[tags=dbi]
+----
+
+… and implement a connector like this:
+
+[source,groovy,indent=0]
+----
+include::src/test/groovy/co/freeside/spock/TruncateTablesSpec.groovy[tags=dbiconnector]
+----
+
+=== Connection state
+
+The connection will be closed after data is deleted.
+
+=== Logging activity
+
+Specify `@TruncateTables(verbose = true)` to log what the extension does.
+
+=== Ignoring exceptions
+
+To ignore any exceptions encountered when deleting data specifiy `@TruncateTables(quiet = true)`.

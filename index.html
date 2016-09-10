@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Spock-jdbc : JDBC related extensions for Spock">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Spock-jdbc</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/robfletcher/spock-jdbc">View on GitHub</a>
+
+          <h1 id="project_title">Spock-jdbc</h1>
+          <h2 id="project_tagline">JDBC related extensions for Spock</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/robfletcher/spock-jdbc/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/robfletcher/spock-jdbc/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="spock-jdbc-extensions" class="anchor" href="#spock-jdbc-extensions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spock JDBC extensions</h1>
+
+<p>JDBC related extensions for <a href="http://spockframework.org">Spock</a>.</p>
+
+<p><a href="https://travis-ci.org/robfletcher/spock-jdbc"><img src="https://travis-ci.org/robfletcher/spock-jdbc.svg?branch=master" alt="Build Status"></a>
+<a href="https://github.com/robfletcher/spock-jdbc"><img src="https://img.shields.io/bintray/v/robfletcher/maven/spock-jdbc.svg?maxAge=2592000" alt="Bintray"></a>
+<a href="https://raw.githubusercontent.com/robfletcher/spock-jdbc/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache%202-blue.svg" alt="License"></a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
+
+<div class="highlight highlight-source-groovy"><pre>dependencies {
+  testCompile <span class="pl-s"><span class="pl-pds">"</span>co.freeside:spock-jdbc:1.0.0<span class="pl-pds">"</span></span>
+}</pre></div>
+
+<h2>
+<a id="automatic-cleanup-of-test-data" class="anchor" href="#automatic-cleanup-of-test-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Automatic cleanup of test data</h2>
+
+<p>If you have tests that insert data to a database it's important to ensure the data is cleaned up between tests.
+Unfortunately, writing a <code>cleanup</code> method that carefully deletes things from the database in the right order is really boring.
+Also, you and I both know you're going to do slightly different things in different tests and 6 months from now something will start leaking and it will take you all morning to figure out why.</p>
+
+<p>Instead you can use the <code>@TruncateTables</code> annotation.</p>
+
+<p>The annotation can be applied to a <code>java.sql.Connection</code>, <code>javax.sql.DataSource</code> or <code>groovy.sql.Sql</code> property of the specification.
+In the cleanup phase the extension will use the annotated field to connect to the database and simply delete everything from all tables.</p>
+
+<p>For example you could use the annotation in a Spring integration test with a dependency-injected <code>DataSource</code> instance like this:</p>
+
+<div class="highlight highlight-source-groovy"><pre><span class="pl-k">@TruncateTables</span> <span class="pl-k">@Autowired</span> <span class="pl-k">DataSource</span> dataSource</pre></div>
+
+<h3>
+<a id="foreign-key-constraints" class="anchor" href="#foreign-key-constraints" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Foreign key constraints</h3>
+
+<p>The extension will analyze foreign key constraints on the tables it finds and delete data in an order that will not cause constraint violation exceptions.</p>
+
+<h3>
+<a id="using-a-custom-connection-source" class="anchor" href="#using-a-custom-connection-source" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using a custom connection source</h3>
+
+<p>If you want to use <code>@TruncateTables</code> with something other than a <code>Connection</code>, <code>DataSource</code> or <code>Sql</code> field you can write an implementation of <code>Connector</code> or <code>TypedConnector</code> and specify it on the annotation.</p>
+
+<p>For example, if you were using <a href="http://jdbi.org/">JDBI</a> and have a <code>org.skife.jdbi.v2.DBI</code> field you could annotate the field with:</p>
+
+<div class="highlight highlight-source-groovy"><pre><span class="pl-k">@TruncateTables</span>(<span class="pl-k">DBIConnector</span>) <span class="pl-c1">DBI</span> dbi</pre></div>
+
+<p>… and implement a connector like this:</p>
+
+<div class="highlight highlight-source-groovy"><pre><span class="pl-k">static</span> <span class="pl-k">class</span> <span class="pl-en">DBIConnector</span> <span class="pl-k">extends</span> <span class="pl-e">TypedConnector&lt;DBI&gt;</span> {
+  <span class="pl-en">DBIConnector</span>() { <span class="pl-v">super</span>(<span class="pl-c1">DBI</span>) }
+
+  <span class="pl-k">@Override</span>
+  <span class="pl-k">protected</span> <span class="pl-k">Connection</span> <span class="pl-en">apply</span>(<span class="pl-v">DBI</span> <span class="pl-v">source</span>) {
+    source<span class="pl-k">.</span>open()<span class="pl-k">.</span>connection
+  }
+}</pre></div>
+
+<h3>
+<a id="connection-state" class="anchor" href="#connection-state" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Connection state</h3>
+
+<p>The connection will be closed after data is deleted.</p>
+
+<p>If you're annotating a raw <code>Connection</code> field that might not be ideal.
+<code>DataSource</code> or something like it that can be used to acquire a fresh connection is really the optimal use-case.</p>
+
+<h3>
+<a id="logging-activity" class="anchor" href="#logging-activity" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logging activity</h3>
+
+<p>To log what the extension does:</p>
+
+<div class="highlight highlight-source-groovy"><pre><span class="pl-k">@TruncateTables</span>(<span class="pl-c1">verbose</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>)</pre></div>
+
+<h3>
+<a id="ignoring-exceptions" class="anchor" href="#ignoring-exceptions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Ignoring exceptions</h3>
+
+<p>To ignore any exceptions encountered when deleting data:</p>
+
+<div class="highlight highlight-source-groovy"><pre><span class="pl-k">@TruncateTables</span>(<span class="pl-c1">quiet</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>)</pre></div>
+
+<h3>
+<a id="questions" class="anchor" href="#questions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Questions</h3>
+
+<h4>
+<a id="can-i-make-it-only-delete-some-data" class="anchor" href="#can-i-make-it-only-delete-some-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Can I make it only delete <em>some</em> data?</h4>
+
+<p>Not at the moment.
+If you have a set of "baseline" data you will need to re-insert it in your <code>setup()</code> method.</p>
+
+<h4>
+<a id="is-this-useful-for-tests-that-run-in-their-own-transaction-like-if-im-using-spring-boots-datajpatest-or-a-grails-integration-tests" class="anchor" href="#is-this-useful-for-tests-that-run-in-their-own-transaction-like-if-im-using-spring-boots-datajpatest-or-a-grails-integration-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Is this useful for tests that run in their own transaction like if I'm using Spring Boot's <code>@DataJpaTest</code> or a Grails integration tests?</h4>
+
+<p>Not really.
+I have no idea whether the deletion or the transaction rollback would happen first.
+Either way would be bad.</p>
+
+<h4>
+<a id="shouldnt-i-just-drop-the-entire-database-schema-and-recreate-it-for-each-test" class="anchor" href="#shouldnt-i-just-drop-the-entire-database-schema-and-recreate-it-for-each-test" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Shouldn't I just drop the entire database schema and recreate it for each test?</h4>
+
+<p>That's also a valid approach.
+<code>@TruncateTables</code> is for people who don't want to do that for some reason.</p>
+
+<h4>
+<a id="i-have-a-circular-foreign-key-constraint-will-that-be-a-problem" class="anchor" href="#i-have-a-circular-foreign-key-constraint-will-that-be-a-problem" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>I have a circular foreign key constraint, will that be a problem?</h4>
+
+<p>Yes. 
+Yes it will. 
+You monster.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Spock-jdbc maintained by <a href="https://github.com/robfletcher">robfletcher</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>

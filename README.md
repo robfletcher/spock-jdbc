@@ -2,8 +2,8 @@
 
 JDBC related extensions for [Spock](http://spockframework.org).
 
-[![Build Status](https://travis-ci.org/robfletcher/spock-jdbc.svg?branch=master)](https://travis-ci.org/robfletcher/spock-jdbc)
-[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/robfletcher/spock-jdbc/master/LICENSE)
+[![Travis branch](https://img.shields.io/travis/robfletcher/spock-jdbc/master.svg?maxAge=2592000?style=flat-square)](https://travis-ci.org/robfletcher/spock-jdbc)
+[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg?style=flat-square)](https://raw.githubusercontent.com/robfletcher/spock-jdbc/master/LICENSE)
 
 ## Automatic cleanup of test data
 

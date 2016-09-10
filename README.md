@@ -3,7 +3,7 @@
 JDBC related extensions for [Spock](http://spockframework.org).
 
 [![Build Status](https://travis-ci.org/robfletcher/spock-jdbc.svg?branch=master)](https://travis-ci.org/robfletcher/spock-jdbc)
-[![Download](https://api.bintray.com/packages/robfletcher/maven/spock-jdbc/images/download.svg) ](https://bintray.com/robfletcher/maven/spock-jdbc/_latestVersion)
+[![Bintray](https://img.shields.io/bintray/v/robfletcher/maven/spock-jdbc.svg?maxAge=2592000)](https://github.com/robfletcher/spock-jdbc)
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/robfletcher/spock-jdbc/master/LICENSE)
 
 ## Installation
@@ -34,7 +34,7 @@ The extension will analyze foreign key constraints on the tables it finds and de
 
 ### Using a custom connection source
 
-Instead of using a `Connection`, `DataSource` or `Sql` property you can write an implementation of `Connector` or `TypedConnector` to acquire a connection from the annotated field.
+If you want to use `@TruncateTables` with something other than a `Connection`, `DataSource` or `Sql` field you can write an implementation of `Connector` or `TypedConnector` and specify it on the annotation.
 
 For example, if you were using [JDBI](http://jdbi.org/) and have a `org.skife.jdbi.v2.DBI` field you could annotate the field with:
 

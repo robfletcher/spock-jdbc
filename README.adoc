@@ -25,7 +25,7 @@ The extension will analyze foreign key constraints on the tables it finds and de
 
 Instead of using a `Connection`, `DataSource` or `Sql` property you can write an implementation of `Connector` or `TypedConnector` to acquire a connection from the annotated field.
 
-For example, if you were using http://jdbi.org/[JDBI] you could annotate the connection with:
+For example, if you were using http://jdbi.org/[JDBI] and have a `org.skife.jdbi.v2.DBI` field you could annotate the field with:
 
 [source,groovy,indent=0]
 ----

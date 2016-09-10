@@ -17,7 +17,10 @@ dependencies {
 ## Automatic cleanup of test data
 
 If you have tests that insert data to a database it's important to ensure the data is cleaned up between tests.
-Instead of having to write a `cleanup` method in each specification class you can use the `@TruncateTables` annotation.
+Unfortunately, writing a `cleanup` method that carefully deletes things from the database in the right order is really boring.
+Also, you and I both know you're going to do slightly different things in different tests and 6 months from now something will start leaking and it will take you all morning to figure out why.
+
+Instead you can use the `@TruncateTables` annotation.
 
 The annotation can be applied to a `java.sql.Connection`, `javax.sql.DataSource` or `groovy.sql.Sql` property of the specification.
 In the cleanup phase the extension will use the annotated field to connect to the database and simply delete everything from all tables.
@@ -59,6 +62,9 @@ static class DBIConnector extends TypedConnector<DBI> {
 
 The connection will be closed after data is deleted.
 
+If you're annotating a raw `Connection` field that might not be ideal.
+`DataSource` or something like it that can be used to acquire a fresh connection is really the optimal use-case.
+
 ### Logging activity
 
 To log what the extension does:
@@ -74,3 +80,26 @@ To ignore any exceptions encountered when deleting data:
 ```groovy
 @TruncateTables(quiet = true)
 ```
+### Questions
+
+#### Can I make it only delete _some_ data?
+
+Not at the moment.
+If you have a set of "baseline" data you will need to re-insert it in your `setup()` method.
+
+#### Is this useful for tests that run in their own transaction like if I'm using Spring Boot's `@DataJpaTest` or a Grails integration tests?
+
+Not really.
+I have no idea whether the deletion or the transaction rollback would happen first.
+Either way would be bad.
+
+#### Shouldn't I just drop the entire database schema and recreate it for each test?
+
+That's also a valid approach.
+`@TruncateTables` is for people who don't want to do that for some reason.
+
+#### I have a circular foreign key constraint, will that be a problem?
+
+Yes. 
+Yes it will. 
+You monster.

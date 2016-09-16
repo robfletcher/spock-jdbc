@@ -97,7 +97,7 @@ To ignore any exceptions encountered when deleting data:
 Not at the moment.
 If you have a set of "baseline" data you will need to re-insert it in your `setup()` method.
 
-#### Is this useful for tests that run in their own transaction like if I'm using Spring Boot's `@DataJpaTest` or a Grails integration tests?
+#### Is this useful for tests that run in their own transaction like if I'm using Spring Boot's `@DataJpaTest` or a Grails integration test?
 
 Not really.
 I have no idea whether the deletion or the transaction rollback would happen first.

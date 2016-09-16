@@ -31,12 +31,18 @@ import org.spockframework.runtime.extension.ExtensionAnnotation;
 @Target({ElementType.FIELD})
 @ExtensionAnnotation(TruncateTablesExtension.class)
 public @interface TruncateTables {
+
+  /**
+   * Alias for {@link #connector()}.
+   */
+  Class<? extends Connector> value() default DefaultConnector.class;
+
   /**
    * The strategy used to connect to the database. If this annotation is applied
    * to anything other than a {@link Connection}, {@link DataSource} or Groovy
    * {@link Sql} field you need to supply your own implementation.
    */
-  Class<? extends Connector> value() default DefaultConnector.class;
+  Class<? extends Connector> connector() default DefaultConnector.class;
 
   /**
    * If `true` exceptions are ignored.

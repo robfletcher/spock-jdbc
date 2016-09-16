@@ -128,7 +128,12 @@ abstract class TruncateTablesSpec extends Specification {
   }
 
   static class TruncateTablesWithJdbiSpec extends TruncateTablesSpec {
-    @TruncateTables(value = DBIConnector, verbose = true)
+    @TruncateTables(connector = DBIConnector, verbose = true)
+    def dbi = new DBI(dataSource)
+  }
+
+  static class TruncateTablesWithConnectorSpecifiedByValueSpec extends TruncateTablesSpec {
+    @TruncateTables(DBIConnector)
     def dbi = new DBI(dataSource)
   }
 

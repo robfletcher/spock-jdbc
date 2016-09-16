@@ -41,12 +41,12 @@ The extension will analyze foreign key constraints on the tables it finds and de
 
 ### Using a custom connection source
 
-If you want to use `@TruncateTables` with something other than a `Connection`, `DataSource` or `Sql` field you can write an implementation of `Connector` or `TypedConnector` and specify it on the annotation.
+If you want to use `@TruncateTables` with something other than a `Connection`, `DataSource` or `Sql` field you can write an implementation of `Connector` or `TypedConnector` and specify it on the annotation's `connector` property.
 
 For example, if you were using [JDBI](http://jdbi.org/) and have a `org.skife.jdbi.v2.DBI` field you could annotate the field with:
 
 ```groovy
-@TruncateTables(DBIConnector) DBI dbi
+@TruncateTables(connector = DBIConnector) DBI dbi
 ```
 
 … and implement a connector like this:
@@ -60,6 +60,12 @@ static class DBIConnector extends TypedConnector<DBI> {
     source.open().connection
   }
 }
+```
+
+For convenience if the connector is the only thing you need to specify on the annotation you can supply it as the annotation's `value` property:
+
+```groovy
+@TruncateTables(DBIConnector) DBI dbi
 ```
 
 ### Connection state

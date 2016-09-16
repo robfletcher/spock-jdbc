@@ -2,10 +2,10 @@ package co.freeside.spock.extension;
 
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import co.freeside.spock.Connector;
 import co.freeside.spock.TruncateTables;
+import co.freeside.spock.extension.jdbc.DefaultConnector;
 import org.spockframework.runtime.extension.ExtensionUtil;
 import org.spockframework.runtime.extension.IMethodInterceptor;
 import org.spockframework.runtime.extension.IMethodInvocation;
@@ -21,8 +21,6 @@ public class TruncateTablesInterceptor implements IMethodInterceptor {
 
   public void install(List<IMethodInterceptor> interceptors) {
     if (fields.isEmpty()) return;
-
-    Collections.reverse(fields);
     interceptors.add(this);
   }
 
@@ -39,7 +37,7 @@ public class TruncateTablesInterceptor implements IMethodInterceptor {
       TruncateTables annotation = field.getAnnotation(TruncateTables.class);
 
       try {
-        Connector connector = annotation.value().newInstance();
+        Connector connector = connector(annotation).newInstance();
         Object fieldValue = field.readValue(invocation.getInstance());
 
         if (fieldValue == null) continue;
@@ -54,6 +52,12 @@ public class TruncateTablesInterceptor implements IMethodInterceptor {
     }
 
     ExtensionUtil.throwAll(exceptions);
+  }
+
+  private Class<? extends Connector> connector(TruncateTables annotation) {
+    return annotation.connector() != DefaultConnector.class
+      ? annotation.connector()
+      : annotation.value();
   }
 }
 
